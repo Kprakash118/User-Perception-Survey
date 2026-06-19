@@ -7,53 +7,36 @@
 </head>
 <body>
 
-    <h2>Loading Survey...</h2>
-    <p>Please allow location access when prompted.</p>
+<h2>Loading Survey...</h2>
+<p>Please allow location access.</p>
 
-    <script>
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
+<script>
 
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
+navigator.geolocation.getCurrentPosition(
 
-                const formUrl =
-                    "https://docs.google.com/forms/d/e/1FAIpQLSeC40J4tUbiNiJYxyEHqqee_T4-wOm3mKnP_2mr28dJ8rHEiA/viewform" +
-                    "?entry.894949836=" + encodeURIComponent(lat) +
-                    "&entry.1426204507=" + encodeURIComponent(lon);
+function(position) {
 
-                window.location.replace(formUrl);
-            },
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
 
-            function(error) {
+    const formUrl =
+    "https://docs.google.com/forms/d/e/1FAIpQLSeC40J4tUbiNiJYxyEHqqee_T4-wOm3mKnP_2mr28dJ8rHEiA/viewform" +
+    "?entry.907346979=" + encodeURIComponent(lat) +
+    "&entry.692264413=" + encodeURIComponent(lon);
 
-                let message = "Unable to get location.";
+    window.location.href = formUrl;
+},
 
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        message = "Location permission denied. Please allow location access and try again.";
-                        break;
+function(error) {
 
-                    case error.POSITION_UNAVAILABLE:
-                        message = "Location information unavailable.";
-                        break;
+    alert(
+        "Location access is required to continue.\n\n" +
+        "Please allow location permission and refresh the page."
+    );
 
-                    case error.TIMEOUT:
-                        message = "Location request timed out.";
-                        break;
-                }
+});
 
-                document.body.innerHTML =
-                    "<h2>" + message + "</h2>";
-            },
-
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
-        );
-    </script>
+</script>
 
 </body>
 </html>
