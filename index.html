@@ -1,46 +1,59 @@
-
-"<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bus Survey</title>
 </head>
 <body>
 
-<h2>Loading Survey...</h2>
+    <h2>Loading Survey...</h2>
+    <p>Please allow location access when prompted.</p>
 
-<script>
+    <script>
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
 
-navigator.geolocation.getCurrentPosition(
-function(position){
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
 
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
+                const formUrl =
+                    "https://docs.google.com/forms/d/e/1FAIpQLSeC40J4tUbiNiJYxyEHqqee_T4-wOm3mKnP_2mr28dJ8rHEiA/viewform" +
+                    "?entry.894949836=" + encodeURIComponent(lat) +
+                    "&entry.1426204507=" + encodeURIComponent(lon);
 
-    const formUrl =
-    "https://docs.google.com/forms/d/e/1FAIpQLSeC40J4tUbiNiJYxyEHqqee_T4-wOm3mKnP_2mr28dJ8rHEiA/viewform?usp=pp_url&entry.907346979=111&entry.692264413=222" +
-    "?entry.894949836=" + lat +
-    "&entry.1426204507=" + lon;
+                window.location.replace(formUrl);
+            },
 
-    window.location.href = formUrl;
-},
-function(error){
-    alert("Please allow location access.");
-});
+            function(error) {
 
-</script>
+                let message = "Unable to get location.";
 
-</body>
-</html>" +
-    "?entry.LATITUDE_ID=" + lat +
-    "&entry.LONGITUDE_ID=" + lon;
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        message = "Location permission denied. Please allow location access and try again.";
+                        break;
 
-    window.location.href = formUrl;
-},
-function(error){
-    alert("Please allow location access.");
-});
+                    case error.POSITION_UNAVAILABLE:
+                        message = "Location information unavailable.";
+                        break;
 
-</script>
+                    case error.TIMEOUT:
+                        message = "Location request timed out.";
+                        break;
+                }
+
+                document.body.innerHTML =
+                    "<h2>" + message + "</h2>";
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    </script>
 
 </body>
 </html>
