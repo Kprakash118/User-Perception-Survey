@@ -1,40 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Bus Survey</title>
-</head>
-<body>
 
-<h2>Loading Survey...</h2>
-
-<script>
-
-navigator.geolocation.getCurrentPosition(
-function(position){
-
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-
-    const formUrl =
-    "<!DOCTYPE html>
-<html>
-<head>
-    <title>Bus Survey</title>
-</head>
-<body>
-
-<h2>Loading Survey...</h2>
-
-<script>
-
-navigator.geolocation.getCurrentPosition(
-function(position){
-
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-
-    const formUrl =
-    "<!DOCTYPE html>
+"<!DOCTYPE html>
 <html>
 <head>
     <title>Bus Survey</title>
@@ -55,19 +20,6 @@ function(position){
     "https://docs.google.com/forms/d/e/1FAIpQLSeC40J4tUbiNiJYxyEHqqee_T4-wOm3mKnP_2mr28dJ8rHEiA/viewform?usp=pp_url&entry.907346979=111&entry.692264413=222" +
     "?entry.894949836=" + lat +
     "&entry.1426204507=" + lon;
-
-    window.location.href = formUrl;
-},
-function(error){
-    alert("Please allow location access.");
-});
-
-</script>
-
-</body>
-</html>" +
-    "?entry.LATITUDE_ID=" + lat +
-    "&entry.LONGITUDE_ID=" + lon;
 
     window.location.href = formUrl;
 },
