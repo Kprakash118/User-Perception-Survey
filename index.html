@@ -1,59 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bus Survey</title>
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Perception Survey</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: #f0f6ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    /* Main card */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+      padding: 2.5rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .card h1 { font-size: 1.4rem; color: #1a2a45; margin-bottom: 0.4rem; }
+    .card p  { font-size: 0.9rem; color: #5a6a80; line-height: 1.6; margin-bottom: 1.75rem; }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .btn:hover  { opacity: 0.88; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn-blue  { background: #2563eb; color: #fff; }
+    .btn-gray  { background: #f1f5f9; color: #475569; }
+
+    /* Modal overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 50;
+    }
+    .overlay.show { display: flex; }
+
+    /* Popup */
+    .popup {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      padding: 1.75rem 1.5rem;
+      max-width: 320px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .popup-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .popup h2 { font-size: 1.05rem; color: #1a2a45; margin-bottom: 0.5rem; }
+    .popup p  { font-size: 0.85rem; color: #5a6a80; line-height: 1.55; margin-bottom: 1.25rem; }
+
+    .popup-btns { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    /* Inline status messages */
+    .status { margin-top: 1rem; font-size: 0.875rem; color: #5a6a80; display: none; }
+    .status.show { display: block; }
+    .status.error { color: #dc2626; }
+  </style>
+</head>
 <body>
 
-<h2>Loading Survey...</h2>
-<p>Please allow location access...</p>
+  <!-- Landing card -->
+  <div class="card">
+    <h1>User Perception Survey</h1>
+    <p>Please allow your location to continue with the survey.<br>
+       Your location is collected only for research purposes.</p>
+    <button class="btn btn-blue" onclick="showPopup()">Start Survey</button>
+    <div class="status" id="status-msg"></div>
+  </div>
 
-<script>
+  <!-- Location permission popup -->
+  <div class="overlay" id="overlay">
+    <div class="popup">
+      <div class="popup-icon">📍</div>
+      <h2>Allow location access?</h2>
+      <p>This survey needs your current location to improve research accuracy. It will not be shared with anyone.</p>
+      <div class="popup-btns">
+        <button class="btn btn-blue" onclick="allowLocation()">Allow Location</button>
+        <button class="btn btn-gray" onclick="hidePopup()">Cancel</button>
+      </div>
+    </div>
+  </div>
 
-if (!navigator.geolocation) {
-    alert("Your browser does not support location.");
-}
-else {
+  <script>
+    const FORM = "https://docs.google.com/forms/d/e/1FAIpQLSeC40J4tUbiNiJYxyEHqqee_T4-wOm3mKnP_2mr28dJ8rHEiA/viewform";
 
-    navigator.geolocation.getCurrentPosition(
+    function showPopup() { document.getElementById("overlay").classList.add("show"); }
+    function hidePopup() { document.getElementById("overlay").classList.remove("show"); }
 
-        function(position) {
+    function setStatus(msg, isError) {
+      const el = document.getElementById("status-msg");
+      el.textContent = msg;
+      el.className = "status show" + (isError ? " error" : "");
+    }
 
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+    function allowLocation() {
+      hidePopup();
+      setStatus("Detecting your location…");
 
-            const url =
-            "https://docs.google.com/forms/d/e/1FAIpQLSeC40J4tUbiNiJYxyEHqqee_T4-wOm3mKnP_2mr28dJ8rHEiA/viewform" +
-            "?usp=pp_url" +
-            "&entry.907346979=" + encodeURIComponent(latitude) +
-            "&entry.692264413=" + encodeURIComponent(longitude);
-
-            window.location.replace(url);
-
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          setStatus("Location found! Redirecting…");
+          window.location.replace(
+            FORM + "?usp=pp_url&entry.907346979=" + encodeURIComponent(lat) +
+            "&entry.692264413=" + encodeURIComponent(lng)
+          );
         },
-
-        function(error) {
-
-            alert(
-                "Location permission is required.\n\nPlease press Allow when Safari asks for your location."
-            );
-
+        function(err) {
+          const msgs = {
+            1: "Location access denied. Please enable it in browser settings and try again.",
+            2: "Location unavailable. Check your GPS or network and try again.",
+            3: "Request timed out. Please try again."
+          };
+          setStatus(msgs[err.code] || "Something went wrong. Please try again.", true);
         },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
 
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        }
-
-    );
-
-}
-
-</script>
+    // Close popup on backdrop click
+    document.getElementById("overlay").addEventListener("click", function(e) {
+      if (e.target === this) hidePopup();
+    });
+  </script>
 
 </body>
 </html>
