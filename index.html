@@ -1,40 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bus Survey</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bus Survey</title>
 </head>
+
 <body>
 
 <h2>Loading Survey...</h2>
-<p>Please allow location access.</p>
+<p>Please allow location access...</p>
 
 <script>
 
-navigator.geolocation.getCurrentPosition(
+if (!navigator.geolocation) {
+    alert("Your browser does not support location.");
+}
+else {
 
-function(position) {
+    navigator.geolocation.getCurrentPosition(
 
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
+        function(position) {
 
-    const formUrl =
-    "https://docs.google.com/forms/d/e/1FAIpQLSeC40J4tUbiNiJYxyEHqqee_T4-wOm3mKnP_2mr28dJ8rHEiA/viewform" +
-    "?entry.907346979=" + encodeURIComponent(lat) +
-    "&entry.692264413=" + encodeURIComponent(lon);
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
 
-    window.location.href = formUrl;
-},
+            const url =
+            "https://docs.google.com/forms/d/e/1FAIpQLSeC40J4tUbiNiJYxyEHqqee_T4-wOm3mKnP_2mr28dJ8rHEiA/viewform" +
+            "?usp=pp_url" +
+            "&entry.907346979=" + encodeURIComponent(latitude) +
+            "&entry.692264413=" + encodeURIComponent(longitude);
 
-function(error) {
+            window.location.replace(url);
 
-    alert(
-        "Location access is required to continue.\n\n" +
-        "Please allow location permission and refresh the page."
+        },
+
+        function(error) {
+
+            alert(
+                "Location permission is required.\n\nPlease press Allow when Safari asks for your location."
+            );
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+
     );
 
-});
+}
 
 </script>
 
